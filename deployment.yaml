@@ -57,17 +57,4 @@ spec:
       port: 80
       targetPort: 80
 ---
-# Service of type LoadBalancer to expose your application externally
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: my-web-app-loadbalancer
-spec:
-  selector:
-    app: my-web-app
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
-  type: LoadBalancer
+# Service of type LoadBalancer to expose your application externall
