@@ -18,6 +18,9 @@ jobs:
       uses: azure/setup-kubectl@v1
       with:
         version: '1.21.2'
+    
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
 
     - name: Configure AWS credentials
       run: aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} && aws configure set default.region us-east-1
