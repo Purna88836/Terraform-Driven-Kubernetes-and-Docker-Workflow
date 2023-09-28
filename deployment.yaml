@@ -26,7 +26,7 @@ apiVersion: eks.amazonaws.com/v1alpha1
 kind: FargateProfile
 metadata:
   name: my-fargate-profile
-  namespace: default  # Specify the namespace where you want to deploy pods on Fargate
+  namespace: default  # Specify the namespace wher you want to deploy pods on Fargate
 selectors:
   - namespace: default
     labels:

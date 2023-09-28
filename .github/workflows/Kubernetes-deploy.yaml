@@ -30,5 +30,7 @@ jobs:
 
     - name: Apply Kubernetes manifests
       run: |
+        curl -o fargate-profile-crd.yaml https://raw.githubusercontent.com/aws/eks-charts/master/stable/cluster-autoscaler/crds/crds.yaml
+        kubectl apply -f fargate-profile-crd.yaml
         kubectl apply -f deployment.yaml
         kubectl apply -f ingress.yaml
