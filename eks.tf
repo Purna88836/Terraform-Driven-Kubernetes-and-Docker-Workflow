@@ -3,12 +3,12 @@ resource "aws_eks_cluster" "my_cluster" {
   role_arn = aws_iam_role.my_cluster_role.arn
 
   vpc_config {
-    subnet_ids = aws_subnet.subnet_a.id, aws_subnet.subnet_b.id
+    subnet_ids = [aws_subnet.subnet_a.id, aws_subnet.subnet_b.id]
   }
 
   default_capacity {
     instance_type = "fargate"
-    subnet_ids   = aws_subnet.subnet_a.id, aws_subnet.subnet_b.id
+    subnet_ids   = [aws_subnet.subnet_a.id, aws_subnet.subnet_b.id]
   }
 }
 
@@ -32,7 +32,7 @@ resource "aws_iam_role" "my_cluster_role" {
 resource "aws_eks_fargate_profile" "default" {
   cluster_name = aws_eks_cluster.my_cluster.name
   pod_execution_role_arn = aws_iam_role.fargate_execution_role.arn
-  subnet_ids = aws_subnet.subnet_a.id, aws_subnet.subnet_b.id
+  subnet_ids = [aws_subnet.subnet_a.id, aws_subnet.subnet_b.id]
 }
 
 resource "aws_iam_role" "fargate_execution_role" {
