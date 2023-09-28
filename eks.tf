@@ -5,11 +5,6 @@ resource "aws_eks_cluster" "my_cluster" {
   vpc_config {
     subnet_ids = [aws_subnet.subnet_a.id, aws_subnet.subnet_b.id]
   }
-
-  default_capacity {
-    instance_type = "fargate"
-    subnet_ids   = [aws_subnet.subnet_a.id, aws_subnet.subnet_b.id]
-  }
 }
 
 resource "aws_iam_role" "my_cluster_role" {
