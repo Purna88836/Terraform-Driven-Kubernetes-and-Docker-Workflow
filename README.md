@@ -56,5 +56,3 @@ To deploy my Dockerized application on AWS EKS with Terraform, I will follow the
 
 ## Conclusion
 Congratulations! I have successfully set up a workflow to create and deploy a Dockerized application on AWS EKS using GitHub Actions and Terraform. This guide has covered the essential steps, from setting up the infrastructure to automating the deployment process.
-
-Feel free to customize and expand upon this foundation to suit my specific application and project requirements. With this automated pipeline in place, I can streamline my development and deployment processes for future projects.
