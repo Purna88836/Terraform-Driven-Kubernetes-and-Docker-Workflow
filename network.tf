@@ -17,15 +17,13 @@ resource "aws_vpc" "my_vpc" {
 resource "aws_subnet" "subnet_a" {
   vpc_id                  = aws_vpc.my_vpc.id
   cidr_block              = "10.0.1.0/24"
-  availability_zone       = "us-east-1a"  # Change to your desired availability zone
   map_public_ip_on_launch = true
 }
 
 resource "aws_subnet" "subnet_b" {
   vpc_id                  = aws_vpc.my_vpc.id
   cidr_block              = "10.0.2.0/24"
-  availability_zone       = "us-east-1b"  # Change to your desired availability zone
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 }
 
 resource "aws_internet_gateway" "Internet_Gateway_vpc" {
@@ -33,6 +31,30 @@ resource "aws_internet_gateway" "Internet_Gateway_vpc" {
 
   tags = {
     Name = "Internet_Gateway_vpc"
+  }
+}
+
+resource "aws_nat_gateway" "my_nat_gateway" {
+  allocation_id = aws_eip.my_eip.id
+  subnet_id     = aws_subnet.subnet_a.id
+}
+
+
+resource "aws_eip" "my_eip" {
+  vpc = true
+}
+
+resource "aws_route_table" "Private_route_table" {
+  vpc_id = aws_vpc.my_vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_nat_gateway.my_nat_gateway.id
+  }
+
+
+  tags = {
+    Name = "Private_route_table"
   }
 }
 
@@ -54,6 +76,12 @@ resource "aws_route_table_association" "POC_Public" {
   subnet_id      = aws_subnet.subnet_a.id
   route_table_id = aws_route_table.Public_route_table.id
 }
+
+resource "aws_route_table_association" "POC_Private" {
+  subnet_id      = aws_subnet.subnet_b.id
+  route_table_id = aws_route_table.Private_route_table.id
+}
+
 
 resource "aws_security_group" "Security_Group_web_access" {
   name        = "Security_Group_web_access"
