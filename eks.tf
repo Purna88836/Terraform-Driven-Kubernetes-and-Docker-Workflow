@@ -24,6 +24,27 @@ resource "aws_iam_role" "my_cluster_role" {
   })
 }
 
+data "aws_iam_policy_document" "admin_policy" {
+  statement {
+    actions   = ["*"]  # Replace with the specific actions you want to allow
+    resources = ["*"]  # Replace with the specific resources you want to allow access to
+    effect    = "Allow"
+  }
+}
+
+# Attach the administrative policy to the IAM role
+resource "aws_iam_policy" "admin_policy" {
+  name        = "my-admin-policy"
+  description = "Administrator Policy"
+  
+  policy = data.aws_iam_policy_document.admin_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "admin_policy_attachment" {
+  policy_arn = aws_iam_policy.admin_policy.arn
+  role       = aws_iam_role.my_cluster_role.name
+}
+
 resource "aws_eks_fargate_profile" "default" {
   cluster_name = aws_eks_cluster.my_cluster.name
   fargate_profile_name = "my-web-app"
@@ -50,4 +71,9 @@ resource "aws_iam_role" "fargate_execution_role" {
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "admin_policy_attachment" {
+  policy_arn = aws_iam_policy.admin_policy.arn
+  role       = aws_iam_role.fargate_execution_role.name
 }
