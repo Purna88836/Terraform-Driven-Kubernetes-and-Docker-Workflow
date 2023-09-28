@@ -90,7 +90,7 @@ resource "aws_route_table_association" "POC_Private" {
   route_table_id = aws_route_table.Private_route_table.id
 }
 
-resource "aws_route_table_association" "POC_Private" {
+resource "aws_route_table_association" "POC_Private1" {
   subnet_id      = aws_subnet.subnet_c.id
   route_table_id = aws_route_table.Private_route_table.id
 }
