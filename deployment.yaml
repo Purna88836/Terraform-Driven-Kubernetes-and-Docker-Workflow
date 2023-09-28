@@ -21,13 +21,3 @@ spec:
         image: purna88836/my-docker-image:latest
         ports:
         - containerPort: 80
-
-apiVersion: eks.amazonaws.com/v1alpha1
-kind: FargateProfile
-metadata:
-  name: my-fargate-profile
-  namespace: default  # Specify the namespace wher you want to deploy pods on Fargate
-selectors:
-  - namespace: default
-    labels:
-      app: my-web-app
