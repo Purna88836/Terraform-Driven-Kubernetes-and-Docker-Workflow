@@ -41,7 +41,7 @@ resource "aws_nat_gateway" "my_nat_gateway" {
 
 
 resource "aws_eip" "my_eip" {
-  vpc = true
+  
 }
 
 resource "aws_route_table" "Private_route_table" {
