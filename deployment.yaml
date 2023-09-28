@@ -12,6 +12,8 @@ spec:
     metadata:
       labels:
         app: my-web-app
+      annotations:
+        eks.amazonaws.com/compute-type: fargate
     spec:
       containers:
       - name: my-web-app
