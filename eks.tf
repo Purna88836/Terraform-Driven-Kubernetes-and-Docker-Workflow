@@ -73,7 +73,7 @@ resource "aws_iam_role" "fargate_execution_role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "admin_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "admin_policy_attachment2" {
   policy_arn = aws_iam_policy.admin_policy.arn
   role       = aws_iam_role.fargate_execution_role.name
 }
