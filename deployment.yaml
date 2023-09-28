@@ -18,3 +18,50 @@ spec:
         image: purna88836/my-docker-image:latest
         ports:
         - containerPort: 80
+
+# Ingress resource to route traffic to your application
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-web-app-ingress
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: my-web-app-service
+                port:
+                  number: 80
+---
+# Service to expose your application within the cluster
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-web-app-service
+spec:
+  selector:
+    app: my-web-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+# Service of type LoadBalancer to expose your application externally
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-web-app-loadbalancer
+spec:
+  selector:
+    app: my-web-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
