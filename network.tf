@@ -23,6 +23,14 @@ resource "aws_subnet" "subnet_a" {
 resource "aws_subnet" "subnet_b" {
   vpc_id                  = aws_vpc.my_vpc.id
   cidr_block              = "10.0.2.0/24"
+  availability_zone       = "us-east-1a"
+  map_public_ip_on_launch = false
+}
+
+resource "aws_subnet" "subnet_c" {
+  vpc_id                  = aws_vpc.my_vpc.id
+  cidr_block              = "10.0.3.0/24"
+  availability_zone       = "us-east-1b"
   map_public_ip_on_launch = false
 }
 
@@ -79,6 +87,11 @@ resource "aws_route_table_association" "POC_Public" {
 
 resource "aws_route_table_association" "POC_Private" {
   subnet_id      = aws_subnet.subnet_b.id
+  route_table_id = aws_route_table.Private_route_table.id
+}
+
+resource "aws_route_table_association" "POC_Private" {
+  subnet_id      = aws_subnet.subnet_c.id
   route_table_id = aws_route_table.Private_route_table.id
 }
 
