@@ -10,6 +10,7 @@ resource "aws_instance" "instance" {
 
   depends_on = [
     aws_subnet.subnet_a,
+    aws_subnet.subnet_b,
     aws_security_group.Security_Group_web_access
   ]
 }
