@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-web-app
+  name: my-web-app-loadbalancer
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-type: alb
 spec:
