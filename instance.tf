@@ -7,4 +7,9 @@ resource "aws_instance" "instance" {
   tags = {
     Name = "virtual_server"
   }
+
+  depends_on = [
+    aws_subnet.subnet_a,
+    aws_security_group.Security_Group_web_access
+  ]
 }

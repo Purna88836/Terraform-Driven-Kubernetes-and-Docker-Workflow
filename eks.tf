@@ -5,6 +5,13 @@ resource "aws_eks_cluster" "my_cluster" {
   vpc_config {
     subnet_ids = [aws_subnet.subnet_b.id, aws_subnet.subnet_c.id]
   }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.Administration,
+    aws_subnet.subnet_a,
+    aws_subnet.subnet_b,
+    aws_subnet.subnet_c
+  ]
 }
 
 resource "aws_iam_role" "my_cluster_role" {
@@ -24,40 +31,47 @@ resource "aws_iam_role" "my_cluster_role" {
   })
 }
 
-data "aws_iam_policy_document" "admin_policy" {
-  statement {
-    actions   = ["*"]  # Replace with the specific actions you want to allow
-    resources = ["*"]  # Replace with the specific resources you want to allow access to
-    effect    = "Allow"
-  }
-}
-
-# Attach the administrative policy to the IAM role
-resource "aws_iam_policy" "admin_policy" {
-  name        = "my-admin-policy"
-  description = "Administrator Policy"
-  
-  policy = data.aws_iam_policy_document.admin_policy.json
-}
-
-resource "aws_iam_role_policy_attachment" "admin_policy_attachment" {
-  policy_arn = aws_iam_policy.admin_policy.arn
+resource "aws_iam_role_policy_attachment" "Administration" {
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
   role       = aws_iam_role.my_cluster_role.name
 }
 
-resource "aws_eks_fargate_profile" "default" {
-  cluster_name = aws_eks_cluster.my_cluster.name
-  fargate_profile_name = "my-web-app"
-  pod_execution_role_arn = aws_iam_role.fargate_execution_role.arn
+resource "aws_eks_node_group" "backend-node" {
+  cluster_name    = aws_eks_cluster.my_cluster.name
+  node_group_name = "test"
+  node_role_arn   = aws_iam_role.worker.arn
   subnet_ids = [aws_subnet.subnet_b.id, aws_subnet.subnet_c.id]
-
-  selector {
-    namespace = "default"  # Replace with the namespace you want to target
+  capacity_type = "ON_DEMAND"
+  disk_size = "20"
+  instance_types = ["t2.micro"]
+  remote_access {
+    ec2_ssh_key = "on-premises-hybrid-etl"
+    source_security_group_ids = [aws_security_group.Security_Group_web_access.id]
+  } 
+  
+  labels =  tomap({env = "test"})
+  
+  scaling_config {
+    desired_size = 2
+    max_size     = 3
+    min_size     = 1
   }
+
+  update_config {
+    max_unavailable = 1
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.Worker-Administration,
+    aws_subnet.subnet_a,
+    aws_subnet.subnet_b,
+    aws_subnet.subnet_c,
+    aws_security_group.Security_Group_web_access
+  ]
 }
 
-resource "aws_iam_role" "fargate_execution_role" {
-  name = "my-fargate-execution-role"
+resource "aws_iam_role" "worker" {
+  name = "my-eks-worker-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -66,14 +80,14 @@ resource "aws_iam_role" "fargate_execution_role" {
         Action = "sts:AssumeRole",
         Effect = "Allow",
         Principal = {
-          Service = "eks-fargate-pods.amazonaws.com"
+          Service = "ec2.amazonaws.com"
         }
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "admin_policy_attachment2" {
-  policy_arn = aws_iam_policy.admin_policy.arn
-  role       = aws_iam_role.fargate_execution_role.name
+resource "aws_iam_role_policy_attachment" "Worker-Administration" {
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+  role       = aws_iam_role.worker.name
 }
