@@ -14,3 +14,5 @@ resource "aws_instance" "instance" {
     aws_security_group.Security_Group_web_access
   ]
 }
+
+#instance
