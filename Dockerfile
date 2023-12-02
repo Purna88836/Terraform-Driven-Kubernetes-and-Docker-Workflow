@@ -7,5 +7,5 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy your web application files from the "app" folder to the Nginx HTML folder
 COPY ./app /usr/share/nginx/html
 
-# Expose port 80 for web traffic .
+# Expose port 80 for web traffic 
 EXPOSE 80

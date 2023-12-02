@@ -21,6 +21,6 @@ jobs:
         DOCKER_BUILDKIT: 1
         DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
       run: |
-        docker build -t purna88836/my-docker-image:latest .
+        docker build -t purna88836/my-docker-image:v1 .
         echo $DOCKER_HUB_PASSWORD | docker login -u purna88836 --password-stdin
-        docker push purna88836/my-docker-image:latest
+        docker push purna88836/my-docker-image:v1
