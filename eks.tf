@@ -1,4 +1,8 @@
+
+# eks cluster and node group setup done
+
 # eks cluster and node group dev setup
+
 resource "aws_eks_cluster" "my_cluster" {
   name     = "my-eks-cluster"
   role_arn = aws_iam_role.my_cluster_role.arn
