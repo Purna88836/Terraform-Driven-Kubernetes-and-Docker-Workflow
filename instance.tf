@@ -17,4 +17,4 @@ resource "aws_instance" "instance" {
 
 #instance creations gagatatattgagaga
 
-#instance3
+#instance 3
