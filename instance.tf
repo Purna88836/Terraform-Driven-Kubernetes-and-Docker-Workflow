@@ -16,8 +16,5 @@ resource "aws_instance" "instance" {
 }
 
 #instance creations gagatatattgagaga
-<<<<<<< HEAD
+
 #instance3
-=======
-#instance2
->>>>>>> origin/poorna
