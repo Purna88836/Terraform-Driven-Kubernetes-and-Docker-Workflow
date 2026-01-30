@@ -1,0 +1,80 @@
+name: MLOps Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  data-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run data validation
+        run: python scripts/data_validation.py
+
+  training:
+    runs-on: ubuntu-latest
+    needs: data-validation
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run training
+        run: python scripts/train.py
+
+  evaluation:
+    runs-on: ubuntu-latest
+    needs: training
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run evaluation
+        run: python scripts/evaluate.py
+
+  model-registry:
+    runs-on: ubuntu-latest
+    needs: evaluation
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Register model
+        run: python scripts/register_model.py
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: model-registry
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Deploy model
+        run: python scripts/deploy.py
+      - name: Manual approval
+        uses: hmarr/auto-approve-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
