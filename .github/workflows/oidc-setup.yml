@@ -1,0 +1,15 @@
+name: OIDC Setup
+
+on:
+  workflow_dispatch:
+
+jobs:
+  configure-oidc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure OIDC
+        run: |
+          aws iam create-open-id-connect-provider --url https://token.actions.githubusercontent.com --client-id-list sts.amazonaws.com --thumbprint-list <thumbprint>
+      - name: Attach policy
+        run: |
+          aws iam attach-role-policy --role-name SageMakerExecutionRole --policy-arn arn:aws:iam::<account-id>:policy/SageMakerPolicy
